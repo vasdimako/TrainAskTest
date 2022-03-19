@@ -1,6 +1,7 @@
 ﻿int seqCounter = 0;
 int entityCounter = 0;
 int charCounter = 0;
+int fileCounter = 0;
 string outputpath;
 
 // Take console inputs for the directories.
@@ -8,55 +9,52 @@ Console.WriteLine("Please enter input file path:");
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 string inputpath = Console.ReadLine();
 Console.WriteLine("Please enter output file name:");
-string outputfile = Console.ReadLine();
+string outputfile = Path.GetFileNameWithoutExtension(Console.ReadLine());
 string outputdir = Directory.GetParent(inputpath).ToString();
 
 // Split sequences after a certain amount of characters.
 Console.WriteLine("Set maximum number of bases per line (0 for the entire sequence):");
 int maxChars = int.Parse(Console.ReadLine());
+
 // Split sequences into separate files.
 Console.WriteLine("Split sequences into separate files? Y/N");
 string splitQ = Console.ReadLine();
-
-/*
-if (splitQ == "Y")
-{
-    file.Close();
-    using StreamWriter file = new(path: Directory.GetParent(inputpath) + @"\" + "output{0}.txt", entityCounter);
-    // Also have to change the entityCounter > 0 if statement to something that looks at if this is the first file line instead.
-}
-*/
 
 //inputpath = @"C:\testpath\test.fasta";
 //outputpath = @"C:\testpath\output.txt";
 // If we're not splitting files, set output path to the directory + the file name and
 // using StreamWriter open the file to write to.
-if (splitQ == "N")
-{
-    outputpath = outputdir + @"\" + outputfile;
-} else
-{
-     outputpath = outputdir + @"\" + $"output{entityCounter}.txt";
-}
-
-using StreamWriter file = new(path: outputpath);
 
 // Read the file and display it line by line.
 foreach (string line in System.IO.File.ReadLines(inputpath))
 {
+    if (splitQ == "N")
+    {
+        outputpath = outputdir + @"\" + outputfile + ".txt";
+    }
+    else
+    {   
+        if (line.StartsWith(">") && entityCounter > 0)
+        {
+            fileCounter++;
+        }
+        outputpath = outputdir + @"\" + $"{outputfile}{fileCounter+1}.txt";
+    }
+
+    using StreamWriter file = new(path: outputpath, append: true);
     // System.Console.WriteLine(line);
     if (line.StartsWith(">"))
     {
-        if (entityCounter > 0)
+        if (entityCounter > 0 && splitQ == "N") // Only do this when writing in one file
         {   
             Console.WriteLine(""); // WriteLine adds a newline character to the end of whatever is written
             file.WriteLine("");
         }
 
         // System.Console.Write($"{Environment.NewLine}"); // Write a newline character, appropriate depending on the environment
-        entityCounter++;
         System.Console.WriteLine(line);
         file.WriteLine(line);
+        entityCounter++;
     }
 
     else
@@ -86,9 +84,9 @@ foreach (string line in System.IO.File.ReadLines(inputpath))
         }
 
     }
-    
+    //file.Close();
 }
-file.Close();
+
 
 System.Console.WriteLine("There were {0} entities.", entityCounter);
 System.Console.WriteLine("There were {0} sequences.", seqCounter);
