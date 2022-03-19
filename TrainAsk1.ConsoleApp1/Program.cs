@@ -14,30 +14,11 @@ string outputdir = Directory.GetParent(inputpath).ToString();
 // Split sequences after a certain amount of characters.
 Console.WriteLine("Set maximum number of bases per line (0 for the entire sequence):");
 int maxChars = int.Parse(Console.ReadLine());
-// Split sequences into separate files.
-Console.WriteLine("Split sequences into separate files? Y/N");
-string splitQ = Console.ReadLine();
-
-/*
-if (splitQ == "Y")
-{
-    file.Close();
-    using StreamWriter file = new(path: Directory.GetParent(inputpath) + @"\" + "output{0}.txt", entityCounter);
-    // Also have to change the entityCounter > 0 if statement to something that looks at if this is the first file line instead.
-}
-*/
 
 //inputpath = @"C:\testpath\test.fasta";
 //outputpath = @"C:\testpath\output.txt";
-// If we're not splitting files, set output path to the directory + the file name and
-// using StreamWriter open the file to write to.
-if (splitQ == "N")
-{
-    outputpath = outputdir + @"\" + outputfile;
-} else
-{
-     outputpath = outputdir + @"\" + $"output{entityCounter}.txt";
-}
+
+outputpath = outputdir + @"\" + outputfile;
 
 using StreamWriter file = new(path: outputpath);
 
