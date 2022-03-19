@@ -1,33 +1,46 @@
 ﻿int seqCounter = 0;
 int entityCounter = 0;
+int charCounter = 0;
+string outputpath;
 
 // Take console inputs for the directories.
-
 Console.WriteLine("Please enter input file path:");
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 string inputpath = Console.ReadLine();
 Console.WriteLine("Please enter output file name:");
-string outputpath = Console.ReadLine();
-outputpath = Directory.GetParent(inputpath) + @"\" + "output.txt";
+string outputfile = Console.ReadLine();
+string outputdir = Directory.GetParent(inputpath).ToString();
 
+// Split sequences after a certain amount of characters.
+Console.WriteLine("Set maximum number of bases per line (0 for the entire sequence):");
+int maxChars = int.Parse(Console.ReadLine());
 // Split sequences into separate files.
 Console.WriteLine("Split sequences into separate files? Y/N");
 string splitQ = Console.ReadLine();
 
+/*
 if (splitQ == "Y")
 {
     file.Close();
     using StreamWriter file = new(path: Directory.GetParent(inputpath) + @"\" + "output{0}.txt", entityCounter);
     // Also have to change the entityCounter > 0 if statement to something that looks at if this is the first file line instead.
 }
+*/
 
-// To set the number of allowable columns per line, we might need to go character-by-character rather than line by line when we write.
-// Or maybe we write it in one line and then go through that line and add newline characters.
-
-inputpath = @"C:\testpath\test.fasta";
-outputpath = @"C:\testpath\output.txt";
+//inputpath = @"C:\testpath\test.fasta";
+//outputpath = @"C:\testpath\output.txt";
+// If we're not splitting files, set output path to the directory + the file name and
+// using StreamWriter open the file to write to.
+if (splitQ == "N")
+{
+    outputpath = outputdir + @"\" + outputfile;
+} else
+{
+     outputpath = outputdir + @"\" + $"output{entityCounter}.txt";
+}
 
 using StreamWriter file = new(path: outputpath);
+
 // Read the file and display it line by line.
 foreach (string line in System.IO.File.ReadLines(inputpath))
 {
@@ -35,7 +48,7 @@ foreach (string line in System.IO.File.ReadLines(inputpath))
     if (line.StartsWith(">"))
     {
         if (entityCounter > 0)
-        {
+        {   
             Console.WriteLine(""); // WriteLine adds a newline character to the end of whatever is written
             file.WriteLine("");
         }
@@ -47,8 +60,33 @@ foreach (string line in System.IO.File.ReadLines(inputpath))
     }
 
     else
-    file.Write(line);
-    seqCounter++;
+    {
+        if (maxChars == 0)
+        {
+            System.Console.WriteLine(line);
+            file.Write(line);
+            seqCounter++;
+        }
+        else
+        {
+            charCounter = 0;
+            foreach (char c in line)
+            {
+                System.Console.Write(c);
+                file.Write(c);
+                charCounter++;
+                if (charCounter == maxChars)
+                {
+                    System.Console.WriteLine("");
+                    file.WriteLine("");
+                    charCounter = 0;
+                        
+                }
+            }
+        }
+
+    }
+    
 }
 file.Close();
 
