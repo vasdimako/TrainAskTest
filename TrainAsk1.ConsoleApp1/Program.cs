@@ -1,7 +1,6 @@
 ﻿int seqCounter = 0;
 int entityCounter = 0;
 int charCounter;
-int fileCounter = 0;
 string outputpath;
 
 // Take console inputs for the directories.
