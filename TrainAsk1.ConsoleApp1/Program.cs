@@ -6,10 +6,26 @@ string outputpath;
 // Take console inputs for the directories.
 Console.WriteLine("Please enter input file path:");
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+
 string inputpath = Console.ReadLine();
+if (String.IsNullOrEmpty(inputpath))
+{
+    // Set default input directory to current directory if empty.
+    Console.WriteLine("Current directory used for output.");
+    inputpath = Directory.GetCurrentDirectory();
+}
+
 Console.WriteLine("Please enter output file name:");
 string outputfile = Path.GetFileNameWithoutExtension(Console.ReadLine());
+if (String.IsNullOrEmpty(outputfile))
+{
+    // Set default output file name if empty.
+    Console.WriteLine("Output filename same as input.");
+    outputfile = (Path.GetFileNameWithoutExtension(inputpath));
+}
+
 string outputdir = Directory.GetParent(inputpath).ToString();
+
 
 // Split sequences after a certain amount of characters.
 Console.WriteLine("Set maximum number of bases per line (0 for the entire sequence):");
