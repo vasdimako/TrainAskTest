@@ -1,6 +1,6 @@
 ﻿int seqCounter = 0;
 int entityCounter = 0;
-int charCounter = 0;
+int charCounter;
 int fileCounter = 0;
 string outputpath;
 
@@ -24,31 +24,34 @@ string splitQ = Console.ReadLine();
 //outputpath = @"C:\testpath\output.txt";
 // If we're not splitting files, set output path to the directory + the file name and
 // using StreamWriter open the file to write to.
+if (splitQ == "N")
+{
+    outputpath = outputdir + @"\" + outputfile + ".txt";
+}
+else
+{
+    outputpath = outputdir + @"\" + $"{outputfile}{entityCounter + 1}.txt";
+}
+
+StreamWriter file = new(path: outputpath, append: true);
 
 // Read the file and display it line by line.
 foreach (string line in System.IO.File.ReadLines(inputpath))
 {
-    if (splitQ == "N")
-    {
-        outputpath = outputdir + @"\" + outputfile + ".txt";
-    }
-    else
-    {   
-        if (line.StartsWith(">") && entityCounter > 0)
-        {
-            fileCounter++;
-        }
-        outputpath = outputdir + @"\" + $"{outputfile}{fileCounter+1}.txt";
-    }
-
-    using StreamWriter file = new(path: outputpath, append: true);
     // System.Console.WriteLine(line);
     if (line.StartsWith(">"))
     {
         if (entityCounter > 0 && splitQ == "N") // Only do this when writing in one file
-        {   
+        {
             Console.WriteLine(""); // WriteLine adds a newline character to the end of whatever is written
             file.WriteLine("");
+        }
+        else if (entityCounter > 0)
+        {
+            file.Close();
+            outputpath = outputdir + @"\" + $"{outputfile}{entityCounter + 1}.txt";
+            file = new(path: outputpath, append: true);
+
         }
 
         // System.Console.Write($"{Environment.NewLine}"); // Write a newline character, appropriate depending on the environment
@@ -78,15 +81,15 @@ foreach (string line in System.IO.File.ReadLines(inputpath))
                     System.Console.WriteLine("");
                     file.WriteLine("");
                     charCounter = 0;
-                        
                 }
             }
+            seqCounter++;
         }
 
     }
     //file.Close();
 }
-
+file.Close();
 
 System.Console.WriteLine("There were {0} entities.", entityCounter);
 System.Console.WriteLine("There were {0} sequences.", seqCounter);
