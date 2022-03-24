@@ -27,7 +27,7 @@ namespace TrainAsk1.ProteinLibrary
 
         public Dictionary<char, int> CountAminos(string sequence)
         {
-            string uniqueAminos = new string(sequence.Distinct().ToArray());
+            string uniqueAminos = new (sequence.Distinct().ToArray());
             Dictionary<char, int> alphabet = new();
 
             foreach (char amino in uniqueAminos)
