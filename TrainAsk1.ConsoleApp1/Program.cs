@@ -9,8 +9,12 @@ string inputPath = @"C:\testpath\test.fasta";
 var outputDir = "C:/testpath/output_vp";
 
 List<Protein> proteins = FastaTools.ReadFasta(inputPath);
-FastaTools.WriteFasta(proteins, outputDir, splitQ, maxChars);
+Dictionary<char, int>  alphabet1 = proteins[0].Alphabet;
 
+foreach((char key, int value) in alphabet1)
+{
+    Console.WriteLine("{0}: {1}", key, value);
+}
 
 foreach (var f in proteins)
 {
@@ -28,4 +32,3 @@ System.Console.WriteLine("There were {0} entities.", proteins.Count());
 System.Console.WriteLine("There were {0} characters.", sumOfChars);
 // Suspend the screen.
 System.Console.ReadLine(); // This makes sure the console waits for our Enter input before the text disappears.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.

@@ -16,11 +16,28 @@ namespace TrainAsk1.ProteinLibrary
             Name = name;
             Description = description;
         }
+        public Dictionary<char, int> Alphabet { get {
+                return CountAminos(Sequence);
+            } 
+        }
         public int CountSeq()
         {
             return Sequence.Length;
         }
-        //Class must know how many of each aminoacid the sequence contains.
-        //Use a table if that exists.
+
+        public Dictionary<char, int> CountAminos(string sequence)
+        {
+            string uniqueAminos = new string(sequence.Distinct().ToArray());
+            Dictionary<char, int> alphabet = new();
+
+            foreach (char amino in uniqueAminos)
+            {
+                int freq = Sequence.Count(f => (f == amino));
+                alphabet.Add(amino, freq);
+            }
+
+            return alphabet;
+        }
+
     }
 }
