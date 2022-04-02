@@ -5,11 +5,12 @@
 //string outputDir = InputChecks.GetOutput(inputPath);
 (string splitQ, int maxChars) = InputChecks.GetOptions();
 
-string inputPath = @"C:\testpath\test.fasta";
-var outputDir = "C:/testpath/output_vp";
+string inputPath = @"C:\covid\test.fasta";
+var outputDir = "C:/covid/output_vp";
 
 List<Protein> proteins = FastaTools.ReadFasta(inputPath);
 Dictionary<char, int>  alphabet1 = proteins[0].Alphabet;
+Dictionary<char, int>  alphabet2 = proteins[0].Alphabet;
 
 foreach((char key, int value) in alphabet1)
 {
